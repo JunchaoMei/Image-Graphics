@@ -1,0 +1,89 @@
+% Problem 5
+
+clear
+load Buchnera.mat
+L=length(Buchnera);
+X=['A' 'C' 'D' 'E' 'F' 'G' 'H' 'I' 'K' 'L' 'M' 'N' 'P' 'Q' 'R' 'S' 'T' 'V' 'W' 'Y' '$'];
+n=length(X);
+for i=1:n
+	Px(i)=length(strfind(Buchnera,X(i)))/L;
+end
+
+bar(Px)
+set(gca,'xtick',1:1:n)
+set(gca,'xticklabel',{'A' 'C' 'D' 'E' 'F' 'G' 'H' 'I' 'K' 'L' 'M' 'N' 'P' 'Q' 'R' 'S' 'T' 'V' 'W' 'Y' '$'})
+xlabel('Amino Acid')
+ylabel('Probability')
+title('Original Distribution of Amino Acids in Buchnera Chromosome')
+
+Hx=entropy_Hx(Px)
+
+% Problem 6
+
+% Transition Counts
+for i=1:n
+	for j=1:n
+		x_y(i,j)=0;
+		for k=1:L-1
+			if Buchnera(k)==X(j) && Buchnera(k+1)==X(i)
+				x_y(i,j) = x_y(i,j) + 1;
+			end
+		end
+	end
+end
+
+% Transition Matrix (Conditional Probabilities)
+Tx_y=sum(x_y);
+for i=1:n
+	for j=1:n
+		Px_y(i,j)=x_y(i,j)/Tx_y(j);
+	end
+end
+
+% Joint Probabilities
+for i=1:n
+	for j=1:n
+		Pxy(i,j)=Px(j)*Px_y(i,j);
+	end
+end
+
+% Conditional Entropy
+Hx_y = entropy_Hx_y(Pxy,Px_y)
+
+% Problem 7
+
+[eigVecs,eigV]=eig(Px_y);
+
+eigVecs
+
+eigValues = diag(eigV)
+
+allPositive = true;
+for i=1:n
+	for j=1:n
+		allPositive = (Px_y(i,j)>0) && allPositive;
+	end
+end
+
+allPositive
+
+t=-1;
+error=1;
+while error>1e-10
+    t = t+1;
+    error=0;
+    new_Px = (Px_y*Px')';
+    for i=1:n
+        error = error + abs(new_Px(i)-Px(i));
+    end
+    Px = new_Px;
+end
+
+t
+
+bar(Px, 'FaceColor', [0.00 0.82 .95])
+set(gca,'xtick',1:1:n)
+set(gca,'xticklabel',{'A' 'C' 'D' 'E' 'F' 'G' 'H' 'I' 'K' 'L' 'M' 'N' 'P' 'Q' 'R' 'S' 'T' 'V' 'W' 'Y' '$'})
+xlabel('Amino Acid')
+ylabel('Probability')
+title('Limiting Distribution of Amino Acids in Buchnera Chromosome')

@@ -1,0 +1,38 @@
+% Problem 10
+
+clear
+P=[0.4 0 0 0.1; 0 0.7 0.3 0.2; 0.3 0.2 0.3 0.4; 0.3 0.1 0.4 0.3];
+X=[0.1; 0.1; 0.5; 0.3];
+
+% (a) Compute X(2), X(3) and X(4)
+
+X2=P*X
+
+X3=P*X2
+
+X4=P*X3
+
+% (b) Compute P^2 and P^3
+
+P2=P*P
+
+P3=P2*P
+
+% (c) Compute X where X=PX
+
+n=length(X);
+t=-1;
+error=1;
+while error>1e-10
+    t = t+1;
+    error=0;
+    new_X = P*X;
+    for i=1:n
+        error = error + abs(new_X(i)-X(i));
+    end
+    X = new_X;
+end
+
+t
+
+X

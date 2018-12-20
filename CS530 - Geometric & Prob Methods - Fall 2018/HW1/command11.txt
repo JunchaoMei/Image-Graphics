@@ -1,0 +1,14 @@
+clear
+[queenR,queenG,queenB]=readppm("queen_butterfly_fish.ppm");
+
+figure
+gdisplay(queenR);
+
+figure
+gdisplay(queenG);
+
+[queenhR,queenhG,queenhB]=color_histogram(queenR,queenG,queenB);
+
+queen_joint=joint_histogram(queenR,queenG);
+
+

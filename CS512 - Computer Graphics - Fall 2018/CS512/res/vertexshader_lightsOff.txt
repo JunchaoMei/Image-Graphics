@@ -1,0 +1,11 @@
+#version 330 core
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+layout (location = 0) in vec3 vertPosition;
+
+void main()
+{	
+	gl_Position = projectionMatrix * modelViewMatrix * vec4(vertPosition,  1.0);
+}

@@ -1,0 +1,91 @@
+% Problem 1
+clear
+
+x=[1 2 3 4 5]';
+A=circulant(x)
+
+% Problem 2
+clear
+
+% 2(a)
+x=[-1 2 -3 4]';
+A=circulant(x)
+
+% 2(b)
+[W,Lambda]=eig(A);
+
+% W -- the matrix of right eigenvectors
+W
+
+% Lambda -- the diagonal matrix of eigenvalues
+Lambda
+
+% 2(c)
+W_inverse = inv(W)
+
+% Matlab do conjugate transpose automatically by just take transpose!
+W_conjugate_transpose = W' 
+
+% 2(d)
+y=[1 2 3 4]';
+Ay=A*y
+
+% 2(e)
+result_2e=W*Lambda*W_conjugate_transpose*y
+
+% 2(f)
+clear
+for i=1:100
+    if mod(i,2)==0
+        xb(i)=i;
+    else
+        xb(i)=-i;
+    end
+end
+B=circulant(xb');
+
+% 2(g)
+[X,D]=eig(B);
+Yt=inv(X);
+% B==X*D*Yt where Yt=X_inverse
+% i-th column of X is right-eigenvector xi
+% i-th row of Yt is left-eigenvector yi
+% D is the diagonal matrix of eigenvalues
+
+[lam12,index12]=magnRank(D,12)
+
+% right eigenvector
+x12=X(:,index12);
+
+% verify x12
+(B*x12-lam12*x12)'  % should be 0
+
+abscissa=[1:1:100];
+figure
+plot(abscissa,real(x12),abscissa,imag(x12));
+title('Right Eigenvector x12');
+xlabel('dimension'); ylabel('value');
+legend('real part','imaginary part');
+
+% left eigenvector
+y12=Yt(index12,:);
+
+% verify y12
+y12*B-lam12*y12  % should be 0
+
+figure
+plot(abscissa,real(y12),abscissa,imag(y12));
+title('Left Eigenvector y12');
+xlabel('dimension'); ylabel('value');
+legend('real part','imaginary part');
+
+
+% Problem 13
+clear
+
+fN1=truncate_Fourier(1);
+fN3=truncate_Fourier(3);
+fN6=truncate_Fourier(6);
+fN12=truncate_Fourier(12);
+fN24=truncate_Fourier(24);
+fN48=truncate_Fourier(48);

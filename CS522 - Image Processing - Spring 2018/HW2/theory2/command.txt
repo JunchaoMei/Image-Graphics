@@ -1,0 +1,31 @@
+clear;
+color_matching_curves; % exact same code from course webpage
+
+% parameters
+dwl=5; wl = linspace(390,730,69); % lambda, WaveLength
+Aspen=A; Pentunia=P;
+r=700; g=545; b=435; % round to the nearest
+Sl=X31'; Sm=Y31'; Ss=Z31';
+Lr=linspace(0,0,69)'; Lg=linspace(0,0,69)'; Lb=linspace(0,0,69)';
+Lr(63)=1; Lg(32)=1; Lb(10)=1;
+
+% [Problem Theory 2(a)] %
+% color matching matrix
+mlr=dwl*dot(Sl,Lr); mlg=dwl*dot(Sl,Lg);  mlb=dwl*dot(Sl,Lb);
+mmr=dwl*dot(Sm,Lr); mmg=dwl*dot(Sm,Lg);  mmb=dwl*dot(Sm,Lb);
+msr=dwl*dot(Ss,Lr); msg=dwl*dot(Ss,Lg);  msb=dwl*dot(Ss,Lb);
+M=[mlr mlg mlb; mmr mmg mmb; msr msg msb]
+% aspen leaf
+cl_Aspen=dwl*dot(Sl,Aspen); cm_Aspen=dwl*dot(Sm,Aspen); cs_Aspen=dwl*dot(Ss,Aspen);
+c_Aspen=[cl_Aspen; cm_Aspen; cs_Aspen]
+v_Aspen=M\c_Aspen  % or "v_Aspen=inv(M)*c_Aspen" or "v_Aspen=(M^-1)*c_Aspen"
+
+% [Problem Theory 2(b)] %
+X_Pentunia=dwl*dot(Sl,Pentunia)
+Y_Pentunia=dwl*dot(Sm,Pentunia)
+Z_Pentunia=dwl*dot(Ss,Pentunia)
+
+% [Problem Theory 2(c)] %
+x_Pentunia = X_Pentunia/(X_Pentunia+Y_Pentunia+Z_Pentunia)
+y_Pentunia = Y_Pentunia/(X_Pentunia+Y_Pentunia+Z_Pentunia)
+z_Pentunia = Z_Pentunia/(X_Pentunia+Y_Pentunia+Z_Pentunia)

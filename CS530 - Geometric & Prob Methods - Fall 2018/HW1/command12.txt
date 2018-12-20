@@ -1,0 +1,14 @@
+clear
+[cactusR,cactusG,cactusB]=readppm("cactus.ppm");
+
+figure
+gdisplay(cactusG);
+
+figure
+gdisplay(cactusB);
+
+cactusJoint=joint_histogram(cactusG,cactusB);
+
+[cactusX,cactusY]=marginal_histogram(cactusJoint);
+
+[cactushR,cactushG,cactushB]=color_histogram(cactusR,cactusG,cactusB);

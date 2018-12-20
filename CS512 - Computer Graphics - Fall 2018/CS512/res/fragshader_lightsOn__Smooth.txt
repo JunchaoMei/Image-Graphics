@@ -1,0 +1,64 @@
+#version 330
+
+in vec3 o_normal;
+in vec3 o_toLight;
+in vec3	o_toCamera;
+in float o_distance;
+
+uniform vec4 lightAmbientIntensitys;
+uniform vec4 lightDiffuseIntensitys;
+uniform vec4 lightSpecularIntensitys;
+uniform vec4 globalAmbientIntensitys;
+uniform vec3 attenuationParameters; // = vec3(1.0, 0.002, 0.001)
+uniform vec4 materialAmbientReflectances;
+uniform vec4 materialDiffuseReflectances;
+uniform vec4 materialSpecularReflectances; // = vec3(1.0, 1.0, 1.0);
+uniform float materialShininess; // = 15.0;
+
+vec4 ambientLighting()
+{
+   return materialAmbientReflectances * (lightAmbientIntensitys + globalAmbientIntensitys);
+}
+
+float attenuation()
+{
+   return 1/(attenuationParameters[0] + attenuationParameters[1]*o_distance + attenuationParameters[2]*pow(o_distance,2));
+}
+
+vec4 diffuseLighting(in vec3 N, in vec3 L)
+{
+   float diffuseTerm = clamp(dot(L, N), 0, 1);
+   return materialDiffuseReflectances * lightDiffuseIntensitys * diffuseTerm * attenuation();
+}
+
+vec4 specularLighting(in vec3 N, in vec3 L, in vec3 V)
+{
+   float specularTerm = 0;
+
+   // calculate specular reflection only if the surface is oriented to the light source
+   if(dot(N, L) > 0)
+   {
+      vec3 H = normalize(L + V);
+      specularTerm = pow(dot(N, H), materialShininess);
+   }
+   return materialSpecularReflectances * lightSpecularIntensitys * specularTerm * attenuation();
+}
+
+vec4 resultColor()
+{
+   // normalize vectors after interpolation
+   vec3 L = normalize(o_toLight);
+   vec3 V = normalize(o_toCamera);
+   vec3 N = normalize(o_normal);
+
+   // Blinn-Phong Illumination
+   vec4 Iamb = ambientLighting();
+   vec4 Idif = diffuseLighting(N, L);
+   vec4 Ispe = specularLighting(N, L, V);
+   return (Iamb + Idif + Ispe);
+}
+
+void main(void)
+{
+   gl_FragColor = resultColor();
+}

@@ -1,0 +1,28 @@
+#version 330
+
+layout(location = 0) in vec3 vertPosition;
+layout(location = 1) in vec3 vertNormal;
+
+uniform mat4 projectionMatrix;
+uniform mat4 modelViewMatrix;
+uniform vec3 lightPosition; // vec3(3.0,3.0,3.0)
+uniform vec3 cameraPosition;
+
+flat out vec3 o_normal; //n
+out vec3 o_toLight; //l
+out vec3 o_toCamera; //v
+out float o_distance; //d
+
+mat4 normalMatrix()
+{
+    return inverse(transpose(modelViewMatrix));
+}
+
+void main(void)
+{
+   o_normal = normalize(normalMatrix() * vec4(vertNormal,0.0)).xyz;
+   o_toLight = normalize(lightPosition - vertPosition);
+   o_toCamera = normalize(cameraPosition - vertPosition);
+   o_distance = distance(lightPosition,vertPosition);
+   gl_Position = projectionMatrix * modelViewMatrix * vec4(vertPosition, 1.0);
+}

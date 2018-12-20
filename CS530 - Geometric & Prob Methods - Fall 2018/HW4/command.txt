@@ -1,0 +1,150 @@
+% Problem 2 %
+clear
+
+% 2(a)
+syms a b x0 x1 s00 s01 s11;
+C=[s00 s01; s01 s11];
+x=[x0; x1];
+
+1/det(C)
+
+x'*inv(C)*x
+
+s00=a/(a^2-b^2);
+s01=-b/(a^2-b^2);
+s11=-a/(a^2-b^2);
+[W,D]=eig(eval(C));
+
+W
+
+% 2(b)
+D
+
+syms u;
+u = W*x
+
+
+% Problem 3 %
+clear
+
+X = [1 2
+2 1
+-1 0
+0 -1
+0 -2
+-2 0];
+
+% 3(a)
+C = (X'*X)/6
+
+% 3(b)
+[W,D]=eig(C);
+W
+
+% 3(c)
+x1 = [1 2]';
+x1w = W' * x1
+
+
+% Problem 4 %
+clear
+
+% 4(a)
+[imR,imG,imB]=readppm("cactus.ppm");
+
+rows=size(imR,1);
+cols=size(imG,2);
+sumVec = [0; 0; 0];
+for i=1:rows
+	for j=1:cols
+		xij = [imR(i,j); imG(i,j); imB(i,j)];
+		sumVec = sumVec + xij;
+	end
+end
+meanVec = sumVec / (rows*cols);
+newR = imR - meanVec(1);
+newG = imG - meanVec(2);
+newB = imB - meanVec(3);
+
+% verify
+sum(sum(newR))
+
+cdisplay(newR,newG,newB);
+
+% 4(b)
+k=1;
+for i=1:rows
+	for j=1:cols
+		X(k,1) = newR(i,j);
+		X(k,2) = newG(i,j);
+		X(k,3) = newB(i,j);
+		k = k+1;
+	end
+end
+C = (X'*X)/(rows*cols)
+
+% 4(c)
+[W,D] = eig(C);
+
+% 4(d)
+for i=1:rows
+	for j=1:cols
+		xij = [imR(i,j); imG(i,j); imB(i,j)];
+		xwij = W'*xij;
+		KLimgR(i,j) = xwij(1);
+		KLimgG(i,j) = xwij(2);
+		KLimgB(i,j) = xwij(3);
+	end
+end
+
+% 4(e)
+cdisplay(KLimgR,KLimgG,KLimgB);
+
+% 4(f) %
+k=1;
+for i=1:rows
+	for j=1:cols
+		X_KL(k,1) = KLimgR(i,j);
+		X_KL(k,2) = KLimgG(i,j);
+		X_KL(k,3) = KLimgB(i,j);
+		k = k+1;
+	end
+end
+
+C_KL = (X_KL'*X_KL)/(rows*cols)
+% I don't understand why it's not diagonal ...
+
+D
+% ... and why C_KL != D?
+
+
+% Problem 5 %
+clear
+
+t=0:0.04:0.8;
+for q=1:length(t)
+	figure
+	gdisplay(torus(t(q)));
+	title(strcat('Problem 5 - Torus(t=',num2str(t(q)),'s)'));
+end
+
+% Problem 6 %
+clear
+color_matching_curves;
+
+dwl=5; % wavelength = linspace(390,730,69);
+Pentunia=P;
+Sl=X31'; Sm=Y31'; Ss=Z31';
+
+% 6(a)
+X_Pentunia=dwl*dot(Sl,Pentunia)
+Y_Pentunia=dwl*dot(Sm,Pentunia)
+Z_Pentunia=dwl*dot(Ss,Pentunia)
+
+% 6(b)
+x_Pentunia = X_Pentunia/(X_Pentunia+Y_Pentunia+Z_Pentunia)
+y_Pentunia = Y_Pentunia/(X_Pentunia+Y_Pentunia+Z_Pentunia)
+z_Pentunia = Z_Pentunia/(X_Pentunia+Y_Pentunia+Z_Pentunia)
+
+% 6(c)
+% The color of petunia is pink-ish

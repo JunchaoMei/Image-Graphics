@@ -1,0 +1,28 @@
+% Problem 4
+
+clear
+X = readpgm("lena.pgm");
+Px = grey_histogram(X);
+Y = readpgm("lena-jpeg.pgm");
+Py = grey_histogram(Y);
+[Px_y, Pxy] = image_conditional_joint(X,Y);
+[Py_x, temp] = image_conditional_joint(Y,X);
+
+% (1) The entropy of the lena image
+Hx = entropy_Hx(Px)
+
+% (2) The entropy of the lena-jpeg image
+Hy = entropy_Hx(Py)
+
+% (3) The channel noise
+Hy_x = entropy_Hy_x(Pxy, Py_x)
+
+% (4) The channel loss
+Hx_y = entropy_Hx_y(Pxy,Px_y)
+
+% (5) Mutual Information
+Ixy_fromY = Hy-Hy_x
+
+Ixy_fromX = Hx-Hx_y
+
+% Since the Ixy calculated from Hy-Hy_x is the same as the Ixy calculated from Hx-Hx_y, the calculations are likely to be correct.
